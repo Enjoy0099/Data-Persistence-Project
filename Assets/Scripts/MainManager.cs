@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -10,6 +8,8 @@ public class MainManager : MonoBehaviour
     public int LineCount = 6;
     public Rigidbody Ball;
 
+
+    public Text Best_ScoreText;
     public Text ScoreText;
     public GameObject GameOverText;
     
@@ -18,7 +18,13 @@ public class MainManager : MonoBehaviour
     
     private bool m_GameOver = false;
 
-    
+
+    private void Awake()
+    {
+        Best_ScoreText.text = "Best Score : " + FindObjectOfType<GameManager>().p_bestName + " : " 
+                                              + FindObjectOfType<GameManager>().p_bestScore.ToString();
+    }
+
     // Start is called before the first frame update
     void Start()
     {
@@ -71,6 +77,21 @@ public class MainManager : MonoBehaviour
     public void GameOver()
     {
         m_GameOver = true;
+
+        if(m_Points > FindObjectOfType<GameManager>().p_bestScore)
+        {
+            FindObjectOfType<GameManager>().p_bestScore = m_Points;
+            Best_ScoreText.text = "Best Score : " + FindObjectOfType<GameManager>().p_Name + " : " + m_Points.ToString();
+            FindObjectOfType<GameManager>().Save_PlayerData(FindObjectOfType<GameManager>().p_Name, m_Points);
+            FindObjectOfType<GameManager>().Load_PlayerData();
+        }
+
         GameOverText.SetActive(true);
     }
+
+    public void Game_Back()
+    {
+        SceneManager.LoadScene(0);
+    }
+
 }
